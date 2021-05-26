@@ -1,8 +1,90 @@
 # Fork for IE11
 
-Update html template to support IE11.
+* Update html template to support IE11.
 
 src/esaml_binding.erl
+
+```
+%% REPLACE TEMPLATE FOR IE11 SUPPORT
+%% Replace doctype, add X-UA-Compatible meta tag
+%%
+%%     iolist_to_binary([<<"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
+%% <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">
+%% <head>
+%% <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />
+%% <title>POST data</title>
+%% </head>
+%% <body>
+%% <script ">>,NonceFragment,<<">
+%% document.addEventListener('DOMContentLoaded', function () {
+%% document.getElementById('saml-req-form').submit();
+%% });
+%% </script>
+%% <noscript>
+%% <p><strong>Note:</strong> Since your browser does not support JavaScript, you must press the button below once to proceed.</p>
+%% </noscript>
+%% <form id=\"saml-req-form\" method=\"post\" action=\"">>,Dest,<<"\">
+%% <input type=\"hidden\" name=\"">>,Type,<<"\" value=\"">>,Req,<<"\" />
+%% <input type=\"hidden\" name=\"RelayState\" value=\"">>,RelayState,<<"\" />
+%% <noscript><input type=\"submit\" value=\"Submit\" /></noscript>
+%% </form>
+%% </body>
+%% </html>">>]).
+
+    iolist_to_binary([<<"<!DOCTYPE html>
+<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">
+<head>
+<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />
+<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />
+<title>POST data</title>
+</head>
+<body>
+<script ">>,NonceFragment,<<">
+document.addEventListener('DOMContentLoaded', function () {
+document.getElementById('saml-req-form').submit();
+});
+</script>
+<noscript>
+<p><strong>Note:</strong> Since your browser does not support JavaScript, you must press the button below once to proceed.</p>
+</noscript>
+<form id=\"saml-req-form\" method=\"post\" action=\"">>,Dest,<<"\">
+<input type=\"hidden\" name=\"">>,Type,<<"\" value=\"">>,Req,<<"\" />
+<input type=\"hidden\" name=\"RelayState\" value=\"">>,RelayState,<<"\" />
+<noscript><input type=\"submit\" value=\"Submit\" /></noscript>
+</form>
+</body>
+</html>">>]).
+```
+
+* Fix for Warnings
+
+src/esaml_sp.erl:331: Warning: crypto:block_decrypt/4 is deprecated and will be removed in OTP 24; use use crypto:crypto_one_time/5, crypto:crypto_one_time_aead/6,7 or crypto:crypto_(dyn_iv)?_init + crypto:crypto_(dyn_iv)?_update + crypto:crypto_final instead
+src/esaml_sp.erl:336: Warning: crypto:block_decrypt/4 is deprecated and will be removed in OTP 24; use use crypto:crypto_one_time/5, crypto:crypto_one_time_aead/6,7 or crypto:crypto_(dyn_iv)?_init + crypto:crypto_(dyn_iv)?_update + crypto:crypto_final instead
+src/esaml_sp.erl:342: Warning: crypto:block_decrypt/4 is deprecated and will be removed in OTP 24; use use crypto:crypto_one_time/5, crypto:crypto_one_time_aead/6,7 or crypto:crypto_(dyn_iv)?_init + crypto:crypto_(dyn_iv)?_update + crypto:crypto_final instead
+
+src/esaml_binding.erl:60: Warning: http_uri:encode/1 is deprecated and will be removed in OTP 25; use use uri_string functions instead
+src/esaml_binding.erl:61: Warning: http_uri:encode/1 is deprecated and will be removed in OTP 25; use use uri_string functions instead
+src/esaml_binding.erl:67: Warning: http_uri:encode/1 is deprecated and will be removed in OTP 25; use use uri_string functions instead
+
+* Change cowboy dependency version
+
+rebar.config
+
+change 2.6 to 2.9
+
+```
+{deps, [
+    {cowboy, "2.6.0"}
+]}.
+```
+
+to 
+
+```
+{deps, [
+    {cowboy, "2.9.0"}
+]}.
+```
 
 # Esaml
 
