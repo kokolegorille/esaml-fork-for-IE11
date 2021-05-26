@@ -1,3 +1,11 @@
+# Fork for IE11
+
+Update html template to support IE11.
+
+
+
+# Esaml
+
 An implementation of the Security Assertion Markup Language (SAML) in Erlang. So far this supports enough of the standard to act as a Service Provider (SP) to perform authentication with SAML. It has been tested extensively against the SimpleSAMLphp IdP and can be used in production.
 
 ### Supported protocols

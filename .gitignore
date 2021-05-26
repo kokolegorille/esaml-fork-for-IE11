@@ -6,3 +6,5 @@ erl_crash.dump
 rebar.lock
 rebar3.crashdump
 test/*.beam
+
+.elixir_ls/

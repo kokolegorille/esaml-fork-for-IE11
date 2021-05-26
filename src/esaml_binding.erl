@@ -86,10 +86,38 @@ generate_post_html(Type, Dest, Req, RelayState, Nonce) ->
         <<>> -> <<>>;
         _ -> [<<"nonce=\"">>, Nonce, <<"\"">>]
     end,
-    iolist_to_binary([<<"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
+
+%% REPLACE TEMPLATE FOR IE11 SUPPORT
+%% Replace doctype, add X-UA-Compatible meta tag
+%%
+%%     iolist_to_binary([<<"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
+%% <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">
+%% <head>
+%% <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />
+%% <title>POST data</title>
+%% </head>
+%% <body>
+%% <script ">>,NonceFragment,<<">
+%% document.addEventListener('DOMContentLoaded', function () {
+%% document.getElementById('saml-req-form').submit();
+%% });
+%% </script>
+%% <noscript>
+%% <p><strong>Note:</strong> Since your browser does not support JavaScript, you must press the button below once to proceed.</p>
+%% </noscript>
+%% <form id=\"saml-req-form\" method=\"post\" action=\"">>,Dest,<<"\">
+%% <input type=\"hidden\" name=\"">>,Type,<<"\" value=\"">>,Req,<<"\" />
+%% <input type=\"hidden\" name=\"RelayState\" value=\"">>,RelayState,<<"\" />
+%% <noscript><input type=\"submit\" value=\"Submit\" /></noscript>
+%% </form>
+%% </body>
+%% </html>">>]).
+
+    iolist_to_binary([<<"<!DOCTYPE html>
 <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">
 <head>
 <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />
+<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />
 <title>POST data</title>
 </head>
 <body>
@@ -108,6 +136,7 @@ document.getElementById('saml-req-form').submit();
 </form>
 </body>
 </html>">>]).
+
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
