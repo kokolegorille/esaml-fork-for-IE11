@@ -2,7 +2,7 @@
 
 Update html template to support IE11.
 
-
+src/esaml_binding.erl
 
 # Esaml
 
